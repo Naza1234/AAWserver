@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: 'http://autoauction.space',
+  origin: 'https://autoauction.space',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
 
