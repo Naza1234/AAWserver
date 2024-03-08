@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: 'https://autoauction.space',
+  origin: '*',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
 
@@ -27,6 +27,8 @@ const garageDetailsRoutes = require('./routes/garageDetailsRoutes');
 const conversationRoute = require('./routes/conversation.route');
 const auctionWinnerRoute = require("./routes/auctionWinnerRoutes");
 const endAuctionRoutes = require('./routes/endAuctionRoutes');
+const OtherImageRoutes = require('./routes/coverImageRoutes');
+const contactUsRoutes = require('./routes/contactUsRoutes');
 
 
 // Use the routes
@@ -42,6 +44,8 @@ app.use("/garage-details", garageDetailsRoutes);
 app.use('/conversations', conversationRoute);
 app.use("/auctionWinner", auctionWinnerRoute);
 app.use("/endAuction", endAuctionRoutes);
+app.use("/OtherImage", OtherImageRoutes);
+app.use("/contactUs", contactUsRoutes); 
 
 
 // Database connection

@@ -6,28 +6,40 @@ const ProductSchema = mongoose.Schema({
         ref: 'User', // Reference to the User model
         required: true
     },
-    productName: {
+    Make: {
         type: String,
         required: true
     },
-    price: {
+    Model: {    
+        type:String,
+        required: true
+    },
+    OdoMeter: {
+        type: String,
+        required: true
+    },
+    Year: {
+        type: String,
+        required: true
+    },
+    Location: {
+        type: String,
+        required: true
+    },
+    Qualification: {
+        type: String,
+        required: true
+    },
+    Category: {
+        type: String,
+        required: true
+    },
+    Price: {
         type: Number,
         required: true
     },
-    location: {
-        type: String,
-        required: true
-    },
-    qualification: {
-        type: String,
-        required: true
-    },
-    category: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
+    Description: {
+        type: Number,
         required: true
     },
     startingDateTime: {
