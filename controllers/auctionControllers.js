@@ -42,6 +42,27 @@ exports.createAuction = async (req, res) => {
 };
 
 
+// Controller function to get active auctions where productSold is false
+exports.getTodaysAuctions = async (req, res) => {
+  try {
+    // Get today's date
+    const today = new Date();
+
+    // Find auctions where productSold is false and the auction is active today
+    const auctions = await Auction.find({
+      productSold: false,
+      startingDateTime: { $lte: today }, // Auction start time is before or equal to today
+      endDateTime: { $gte: today } // Auction end time is after or equal to today
+    });
+
+    res.status(200).json({ auctions: auctions });
+    console.log(auctions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 exports.getAllAuctions = async (req, res) => {
   try {
     const auctions = await Auction.find({});
