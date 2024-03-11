@@ -42,21 +42,36 @@ exports.createAuction = async (req, res) => {
 };
 
 
-// Controller function to get active auctions where productSold is false
 exports.getTodaysAuctions = async (req, res) => {
   try {
     // Get today's date
     const today = new Date();
 
-    // Find auctions where productSold is false and the auction is active today
-    const auctions = await Product.find({
-      productSold: false,
-      startingDateTime: { $lte: today }, // Auction start time is before or equal to today
-      endDateTime: { $gte: today } // Auction end time is after or equal to today
-    });
+    // Fetch all auctions from the database
+    const auctions = await Product.find({});
 
-    res.status(200).json( auctions );
+    // Array to store auctions that meet the criteria
+    const todaysAuctions = [];
 
+    // Iterate through each auction
+    for (let i = 0; i < auctions.length; i++) {
+      const auction = auctions[i];
+
+      // Convert startingDateTime and endDateTime strings to Date objects
+      const startingDateTime = new Date(auction.startingDateTime);
+      const endDateTime = new Date(auction.endDateTime);
+
+      // Check if productSold is false and the auction is active today
+      if (
+        auction.productSold === false &&
+        startingDateTime <= today &&
+        endDateTime >= today
+      ) {
+        todaysAuctions.push(auction);
+      }
+    }
+
+    res.status(200).json(todaysAuctions);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
