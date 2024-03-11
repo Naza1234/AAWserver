@@ -49,14 +49,14 @@ exports.getTodaysAuctions = async (req, res) => {
     const today = new Date();
 
     // Find auctions where productSold is false and the auction is active today
-    const auctions = await Auction.find({
+    const auctions = await Product.find({
       productSold: false,
       startingDateTime: { $lte: today }, // Auction start time is before or equal to today
       endDateTime: { $gte: today } // Auction end time is after or equal to today
     });
 
-    res.status(200).json({ auctions: auctions });
-    console.log(auctions);
+    res.status(200).json( auctions );
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
