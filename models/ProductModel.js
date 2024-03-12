@@ -39,7 +39,7 @@ const ProductSchema = mongoose.Schema({
         required: true
     },
     Description: {
-        type: Number,
+        type: String,
         required: true
     },
     startingDateTime: {
