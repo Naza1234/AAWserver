@@ -29,6 +29,7 @@ const auctionWinnerRoute = require("./routes/auctionWinnerRoutes");
 const endAuctionRoutes = require('./routes/endAuctionRoutes');
 const OtherImageRoutes = require('./routes/coverImageRoutes');
 const contactUsRoutes = require('./routes/contactUsRoutes');
+const SavedProductRoutes = require('./routes/savedProducts');
 
 
 // Use the routes
@@ -46,6 +47,7 @@ app.use("/auctionWinner", auctionWinnerRoute);
 app.use("/endAuction", endAuctionRoutes);
 app.use("/OtherImage", OtherImageRoutes);
 app.use("/contactUs", contactUsRoutes); 
+app.use("/savedProduct", SavedProductRoutes); 
 
 
 // Database connection

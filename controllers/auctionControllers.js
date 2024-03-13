@@ -77,6 +77,62 @@ exports.getTodaysAuctions = async (req, res) => {
   }
 };
 
+exports.getInventory = async (req, res) => {
+  try {
+    // Get today's date
+    const today = new Date();
+
+    // Fetch all auctions from the database
+    const auctions = await Product.find({});
+
+    // Array to store auctions that meet the criteria
+    const Auctions = [];
+
+    // Iterate through each auction
+    for (let i = 0; i < auctions.length; i++) {
+      const auction = auctions[i];
+
+
+      // Check if productSold is false and the auction is active today
+      if (
+        auction.productSold === false
+      ) {
+        Auctions.push(auction);
+      }
+    }
+
+    res.status(200).json(Auctions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getAuctionByCalender = async (req, res) => {
+    try {
+        // Extract start date and end date from req.body
+        const { startDate, endDate } = req.body;
+
+        // Parse the dates to JavaScript Date objects
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+
+        // Fetch all products
+        const allProducts = await Product.find({ productSold: false });
+
+        // Filter products based on the given criteria
+        const filteredProducts = allProducts.filter(product => {
+            const startingDateTime = new Date(product.startingDateTime);
+            return startingDateTime >= startDateObj && startingDateTime <= endDateObj;
+        });
+
+        res.status(200).json(filteredProducts);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
 
 exports.getAllAuctions = async (req, res) => {
   try {
