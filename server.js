@@ -30,6 +30,7 @@ const endAuctionRoutes = require('./routes/endAuctionRoutes');
 const OtherImageRoutes = require('./routes/coverImageRoutes');
 const contactUsRoutes = require('./routes/contactUsRoutes');
 const SavedProductRoutes = require('./routes/savedProducts');
+const vehicleFinderRoutes = require('./routes/vehiculeFinderRoutes');
 
 
 // Use the routes
@@ -48,6 +49,7 @@ app.use("/endAuction", endAuctionRoutes);
 app.use("/OtherImage", OtherImageRoutes);
 app.use("/contactUs", contactUsRoutes); 
 app.use("/savedProduct", SavedProductRoutes); 
+app.use("/vehicleFinder", vehicleFinderRoutes); 
 
 
 // Database connection

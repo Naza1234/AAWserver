@@ -42,6 +42,46 @@ exports.createAuction = async (req, res) => {
 };
 
 
+
+exports.createAuctionNow = async (req, res) => {
+  try {
+    const { userId, productId, amount } = req.body;
+    
+    // Check if the user exists
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Check if the UserPaymentStatus is "free"
+    if (existingUser.UserPaymentStatus !== 'free') {
+      // UserPaymentStatus is "free", proceed to find auctions
+      const userAuctions = await Auction.find({ userId: existingUser._id });
+    
+      // Array to store products from participated auctions
+      // Iterate over userAuctions and find products
+      for (const auction of userAuctions) {
+        // Find product in the Product database
+        const product = await Product.findById(auction.productId);
+        
+        // Check if the product is sold
+        if (product && product.productSold === true) {
+          // If productSold is false, return a 204 status
+          return res.status(404).json();
+        }
+      }
+    }
+    const newAuction = await Auction.create(req.body);
+   
+    // Send the result as a JSON response
+    res.status(200).json(newAuction);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+  
+};
+
+
 exports.getTodaysAuctions = async (req, res) => {
   try {
     // Get today's date

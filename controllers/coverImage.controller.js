@@ -96,7 +96,7 @@ exports.getAllProductImages = async (req, res) => {
 exports.getSingleProductImage = async (req, res) => {
   try {
     const { id } = req.params;
-    const productImage = await ProductsImage.findOne({ productId: id });
+    const productImage = await ProductsImage.find({ productId: id });
   
     if (!productImage) {
       return res.status(404).json({ message: 'Product image not found' });
