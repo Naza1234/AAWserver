@@ -15,11 +15,11 @@ const ProductSchema = mongoose.Schema({
         required: true
     },
     OdoMeter: {
-        type: String,
+        type: Number,
         required: true
     },
     Year: {
-        type: String,
+        type: Number,
         required: true
     },
     Location: {
