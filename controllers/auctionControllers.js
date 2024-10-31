@@ -59,7 +59,7 @@ exports.createAuction = async (req, res) => {
     const lastAuction = await Auction.findOne().sort({ createdAt: -1 }); 
 
     // Check if there’s an auction already and compare amounts
-    if (lastAuction && req.body.amount <= lastAuction.amount) {
+    if (lastAuction && amount <= lastAuction.amount) {
       return res.status(400).json({
         error: `The bid amount must be more than the previous auction's amount of ${lastAuction.amount}.`,
       });
