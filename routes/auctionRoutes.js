@@ -6,7 +6,7 @@ const endAuctionControllers = require('../controllers/endAuctionControllers');
 
 
 
-router.post('/add_action', auctionControllers.createAuction);
+router.post('/add_action', auctionControllers.createAuctionNow);
 router.post('/done_it', auctionControllers.createAuctionNow);
 router.get('/', auctionControllers.getAllAuctions);
 router.get('/todays-auction', auctionControllers.getTodaysAuctions);

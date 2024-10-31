@@ -12,6 +12,9 @@ const savedProductsSchema = new mongoose.Schema({
     ref: 'Product',
     required: true
   }
+},
+{
+    timestamps: true
 });
 
 const savedProducts = mongoose.model('savedProducts', savedProductsSchema);

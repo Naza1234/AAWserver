@@ -1,3 +1,7 @@
+
+
+
+
 const mongoose = require('mongoose');
 
 const productImageSchema = new mongoose.Schema({

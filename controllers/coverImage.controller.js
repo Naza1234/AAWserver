@@ -26,28 +26,61 @@ exports.addProductImage = async (req, res) => {
     res.status(500).json({ message: error.message });
   } 
 };
-const fileStorage=multer.diskStorage({
-  destination: (req,file,cd) =>{
-      cd(null,'image')
-  },
-  filename: (req, file, cd)=>{
-      cd(null,Date.now() + path.extname(file.originalname))
-  }
-})
-exports.upload=multer({
-  storage:fileStorage,
-   limits:{fileSize: '10000000'},
-  fileFilter: (req, file, callback) => {
-      const acceptableExtensions = ['png', 'jpg', 'jpeg', 'jpg']
-      if (!(acceptableExtensions.some(extension => 
-          path.extname(file.originalname).toLowerCase() === `.${extension}`)
-      )) {
-          return callback(new Error(`Extension not allowed, accepted extensions are ${acceptableExtensions.join(',')}`))
-      }
-      callback(null, true)
-  }
-}).any()
-// Read all product images
+
+// Define storage for the files
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './image'); // Change this to your desired upload directory
+    },
+    filename: (req, file, cb) => {
+        // Determine the file extension based on the MIME type
+        let extension = '';
+        switch (file.mimetype) {
+            case 'image/png':
+                extension = '.png';
+                break;
+            case 'image/jpeg':
+                extension = '.jpeg';
+                break;
+            case 'image/jpg':
+                extension = '.jpg';
+                break;
+            // Add more cases for other MIME types as needed
+            default:
+                extension = ''; // Default to empty if not a known type
+        }
+
+        // Generate a filename with a timestamp and the correct extension
+        const filename = `${Date.now()}-${file.originalname}${extension}`;
+        cb(null, filename); // Save the file with the new filename
+    }
+});
+
+// Setup multer with the updated file filter
+exports.upload = multer({
+    storage: fileStorage,
+    limits: { fileSize: 10000000 }, // Limit file size to 10 MB
+    fileFilter: (req, file, callback) => {
+        const acceptableExtensions = ['png', 'jpg', 'jpeg'];
+        const acceptableMimeTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+
+        // Check the file extension
+        const fileExtension = path.extname(file.originalname).toLowerCase();
+        const isValidExtension = acceptableExtensions.includes(fileExtension);
+
+        // Check the MIME type
+        const isValidMimeType = acceptableMimeTypes.includes(file.mimetype);
+
+        // Accept the file if it matches either the extension or MIME type
+        if (!isValidExtension && !isValidMimeType) {
+            return callback(new Error(`Extension not allowed, accepted extensions are ${acceptableExtensions.join(', ')}`));
+        }
+
+        callback(null, true); // Accept the file
+    }
+}).any();
+
+
 
 
 

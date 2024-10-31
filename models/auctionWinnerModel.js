@@ -12,6 +12,9 @@ const auctionWinnerSchema = new mongoose.Schema({
     ref: 'Product',
     required: true
   }
+},
+{
+    timestamps: true
 });
 
 const AuctionWinner = mongoose.model('AuctionWinner', auctionWinnerSchema);

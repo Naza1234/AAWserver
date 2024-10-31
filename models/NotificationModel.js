@@ -6,6 +6,11 @@ const NotificationSchema = mongoose.Schema({
         ref: 'User', // Reference to the User model
         required: true
     },
+    productID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product', // Reference to the User model
+        required: true
+    },
     notificationMessage: {
         type: String,
         required: true
