@@ -32,7 +32,7 @@ exports.createAuction = async (req, res) => {
       }
 
       if (currentDateTime < startDate) {
-        return res.status(400).json({ message: 'Auction cannot start in the past.' });
+        return res.status(400).json({ message: 'Auction has not started.' });
       }
     // If the UserPaymentStatus is "free", proceed to find active auctions
     if (existingUser.UserPaymentStatus === 'free') {
@@ -56,7 +56,18 @@ exports.createAuction = async (req, res) => {
     }
     
     // Create a new auction since the user is eligible
+    const lastAuction = await Auction.findOne().sort({ createdAt: -1 }); 
+
+    // Check if there’s an auction already and compare amounts
+    if (lastAuction && req.body.amount <= lastAuction.amount) {
+      return res.status(400).json({
+        error: `The bid amount must be more than the previous auction's amount of ${lastAuction.amount}.`,
+      });
+    }
+
+    // If valid, create the new auction
     const newAuction = await Auction.create(req.body);
+
     
     // Send the new auction as a JSON response
     res.status(200).json(newAuction);
