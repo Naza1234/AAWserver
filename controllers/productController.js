@@ -89,7 +89,20 @@ exports.getActiveAuctionProducts = async (req, res) => {
 
     const activeAuction = [];
     for (const iterator of activeAuctionProductIds) {
-      const auctions = await Product.findById(iterator._id);
+      const auctions = await Product.aggregate([
+        {
+          $addFields: {
+            endDateTimeAsDate: { $dateFromString: { dateString: "$endDateTime" } }
+          }
+        },
+        {
+          $match: {
+            _id: iterator._id,
+            endDateTimeAsDate: { $gt: new Date() }
+          }
+        }
+      ]);
+      
       activeAuction.push(auctions);
     }
 
