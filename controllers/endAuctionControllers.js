@@ -9,6 +9,9 @@ const Product = require('../models/ProductModel');
 const ProductsImage = require('../models/productImageModel');
 const User = require('../models/UserModel');
 const Withdrawal = require('../models/WithdrawalModel');
+const ProductImage = require('../models/productImageModel'); // Update the path to the ProductImage model
+const CarDetailsModel = require('../models/CarDetailsModel'); // Update the path to CarDetailsModel
+const GarageDetailsModel = require('../models/GarageDetailsModel'); // Update the path to GarageDetailsModel
 
 
 
@@ -27,7 +30,9 @@ exports.EndAuction = async (req, res) => {
     const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
 
     const products = await Product.find({});
-    
+    deleteDuplicateCoverImages();
+    deleteDuplicateCarDetails();
+    deleteDuplicateGarageDetails();
     for (const iterator of products) {
       if (formattedDateTime > iterator.endDateTime && iterator.Category === "Auction Product") {
         // Find the latest auction entry
@@ -88,3 +93,111 @@ exports.EndAuction = async (req, res) => {
     res.status(500).json({ message: "An error occurred during the auction process.", error: error.message });
   }
 };
+
+
+
+
+async function deleteDuplicateCoverImages() {
+  try {
+    // Find all products with duplicate cover images
+    const images = await ProductImage.aggregate([
+      {
+        $group: {
+          _id: { productId: "$productId", imageUrl: "$imageUrl" },
+          duplicates: { $push: "$_id" },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $match: {
+          count: { $gt: 1 }
+        }
+      }
+    ]);
+
+    // Loop through each set of duplicates
+    for (const image of images) {
+      const [keepImage, ...duplicates] = image.duplicates; // Keep the first image, delete the rest
+
+      // Delete the duplicates
+      await ProductImage.deleteMany({ _id: { $in: duplicates } });
+    }
+
+    console.log("Duplicate cover images deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting duplicate cover images:", error);
+  }
+}
+
+// Run the function
+
+
+async function deleteDuplicateCarDetails() {
+  try {
+    // Find duplicates based on `productId` and `detailTitle`
+    const duplicates = await CarDetailsModel.aggregate([
+      {
+        $group: {
+          _id: { productId: "$productId", detailTitle: "$detailTitle" },
+          duplicates: { $push: "$_id" },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $match: {
+          count: { $gt: 1 } // Only return groups with duplicates
+        }
+      }
+    ]);
+
+    // Loop through each duplicate set
+    for (const item of duplicates) {
+      const [keepDetail, ...toDelete] = item.duplicates; // Keep the first, delete the rest
+
+      // Delete duplicates
+      await CarDetailsModel.deleteMany({ _id: { $in: toDelete } });
+    }
+
+    console.log("Duplicate car details deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting duplicate car details:", error);
+  }
+}
+
+// Run the function
+
+
+async function deleteDuplicateGarageDetails() {
+  try {
+    // Find duplicates based on `productId` and `detailTitle`
+    const duplicates = await GarageDetailsModel.aggregate([
+      {
+        $group: {
+          _id: { productId: "$productId", detailTitle: "$detailTitle" },
+          duplicates: { $push: "$_id" },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $match: {
+          count: { $gt: 1 } // Only return groups with duplicates
+        }
+      }
+    ]);
+
+    // Loop through each duplicate set
+    for (const item of duplicates) {
+      const [keepDetail, ...toDelete] = item.duplicates; // Keep the first, delete the rest
+
+      // Delete duplicates
+      await GarageDetailsModel.deleteMany({ _id: { $in: toDelete } });
+    }
+
+    console.log("Duplicate garage details deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting duplicate garage details:", error);
+  }
+}
+
+// Run the function
+
